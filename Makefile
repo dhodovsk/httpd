@@ -1,7 +1,12 @@
 .PHONY: build run defult
 
-IMAGE_NAME = image
+#absolute path to your web root
+#DIR_PATH = /
 
+#docker tag name
+IMAGE_NAME = httpd
+
+PORT = 80
 
 defult: run
 
@@ -9,7 +14,6 @@ build:
 	docker build --tag=$(IMAGE_NAME) .
 
 run: build
-	docker run -d $(IMAGE_NAME)
-
-test:
-	run_test.sh
+ifdef DIR_PATH
+		docker run -p $(PORT) -v $(DIR_PATH):/var/www/html/ $(IMAGE_NAME)
+endif

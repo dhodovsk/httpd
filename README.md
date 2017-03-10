@@ -8,7 +8,7 @@ This repository contains file **httpd.conf** in files directory where you can co
 
 ### 1) Shell
 ```
-$ docker run -p 80:80 -v <DIR>:/var/www/html rpitonak/httpd-module
+$ docker run -p 80:80 -v <DIR>:/var/www/html rpitonak/httpd-container
 ```
 This starts the container and forwards port 80 from container to port 80 on host.
 Substitute <DIR> with **absolute** path to your web root. You may also need to change SELinux settings like following.

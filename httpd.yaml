@@ -1,0 +1,60 @@
+document: modulemd
+version: 1
+data:
+    summary: httpd webserver
+    description: an initial version of the httpd webserver module
+    license:
+        module: [ MIT ]
+    dependencies:
+        buildrequires:
+            #workaround before base-runtime is ready
+            bootstrap: master
+        requires:
+            base-runtime: master
+    references:
+        community: https://docs.pagure.org/modularity/
+        documentation: https://github.com/container-images/httpd
+        tracker: https://github.com/container-images/httpd
+    profiles:
+        default:
+            rpms:
+                - httpd
+    api:
+        rpms:
+            - httpd
+    components:
+        rpms:
+            httpd:
+                rationale: Provides API for this module.
+                ref: f25
+
+            apr:
+                rationale: dependency
+                ref: f25
+            apr-util:
+                rationale: dependency
+                ref: f25
+            generic-logos:
+                rationale: dependency
+                ref: f25
+            generic-release:
+                rationale: dependency
+                ref: f25
+            libmnl:
+                rationale: dependency
+                ref: f25
+            libnetfilter_conntrack:
+                rationale: dependency
+                ref: f25
+            libnfnetlink:
+                rationale: dependency
+                ref: f25
+            libxkbcommon:
+                rationale: dependency
+                ref: f25
+            mailcap:
+                rationale: dependency
+                ref: f25
+            xkeyboard-config:
+                rationale: dependency
+                ref: f25

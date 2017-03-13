@@ -13,4 +13,4 @@ RUN chmod +x run-script.sh
 # expose ports
 EXPOSE 80
 
-CMD /bin/sh run-script.sh
+CMD /bin/sh /run-script.sh

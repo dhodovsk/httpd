@@ -5,4 +5,4 @@
 #change SELinux options for folder because of permissions
 chcon -Rt svirt_sandbox_file_t $(pwd)
 
-docker run -p 80:80 -i -t -v $(pwd):/var/www/html -w /var/www/html rpitonak/httpd-container /bin/bash -c "/usr/sbin/httpd; /bin/bash"
+docker run -p 80:80 -i -t -v $(pwd):/var/www/ -w /var/www/ rpitonak/httpd /bin/bash -c "/usr/sbin/httpd; /bin/bash"

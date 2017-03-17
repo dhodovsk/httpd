@@ -15,5 +15,5 @@ build:
 
 run: build
 ifdef DIR_PATH
-		docker run -p $(PORT) -v $(DIR_PATH):/var/www/html/ $(IMAGE_NAME)
+		docker run -p $(PORT) -v $(DIR_PATH):/var/www/ $(IMAGE_NAME)
 endif

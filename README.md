@@ -8,14 +8,18 @@ This repository contains file **httpd.conf** in files directory where you can co
 
 ### 1) Shell
 ```
-$ docker run -p 80:80 -v <DIR>:/var/www/html rpitonak/httpd-container
+$ docker run -p 80:80 -v <DIR>:/var/www/ rpitonak/httpd
 ```
 This starts the container and forwards port 80 from container to port 80 on host.
 Substitute <DIR> with **absolute** path to your web root. You may also need to change SELinux settings like following.
-Note that it is only for **testing purpose**.
+
 ```
 chcon -Rt svirt_sandbox_file_t <DIR>
 ```
+Note that this is only for **testing purpose**. You can find more information about handling permissions in docker containers on this links:
+* [Handling Permissions with Docker Volumes](https://denibertovic.com/posts/handling-permissions-with-docker-volumes/)
+* [Practical SELinux and Containers](http://www.projectatomic.io/blog/2016/03/dwalsh_selinux_containers/)
+* [Using Volumes with Docker can Cause Problems with SELinux](http://www.projectatomic.io/blog/2015/06/using-volumes-with-docker-can-cause-problems-with-selinux/)
 
 ### 2) Makefile
 ```
@@ -29,7 +33,7 @@ IMAGE_NAME = httpd
 PORT = 80
 ```
 
-If you specify `DIR_PATH` variable executing make will also **run** the container.
+If you specify `DIR_PATH` variable, executing make will also **run** the container.
 
 ```
 #absolute path to your web root
@@ -47,11 +51,11 @@ $ oc edit scc restricted
 
 Find `RunAsUser` and change its value from `MustRunAsRange` to `RunAsAny`.
 
-Then you will be able to run the container using the `openshift-template.json` template in this repo:
+Then you will be able to run the container using the `openshift-template.yaml` template in this repo:
 
 ```
 $ oc login -u developer
-$ oc create -f openshift-template.json
+$ oc create -f openshift-template.yaml
 ```
 
 ## Httpd container for development

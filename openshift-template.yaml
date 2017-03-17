@@ -1,0 +1,81 @@
+---
+kind: Template
+apiVersion: v1
+metadata:
+  name: httpd
+  annotations:
+    description: Httpd container
+    tags: httpd, container
+    iconClass: icon-docker
+labels:
+  template: httpd-container
+  role: webserver
+objects:
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: httpd-service
+  spec:
+    selector:
+      name: httpd-service
+    ports:
+    - name: httpd
+      protocol: TCP
+      port: 8080
+      targetPort: 80
+      nodePort: 0
+    portalIP: ''
+    type: ClusterIP
+- kind: ImageStream
+  apiVersion: v1
+  metadata:
+    name: httpd-container
+  spec:
+    dockerImageRepository: rpitonak/httpd
+    tags:
+    - name: latest
+- kind: Route
+  apiVersion: v1
+  metadata:
+    name: httpd-service-route
+  spec:
+    host: ''
+    to:
+      kind: Service
+      name: httpd-service
+- kind: DeploymentConfig
+  apiVersion: v1
+  metadata:
+    name: httpd-container
+  spec:
+    selector:
+      name: httpd-service
+    strategy:
+      type: Rolling
+    triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+        - httpd-container
+        from:
+          kind: ImageStreamTag
+          name: httpd-container:latest
+    replicas: 1
+    template:
+      metadata:
+        name: httpd-container-dummy
+        labels:
+          name: httpd-service
+      spec:
+        containers:
+        - name: httpd-container
+          image: httpd-container:latest
+          ports:
+          - containerPort: 80
+          volumeMounts:
+          - name: data
+            mountPath: "/var/www/html"
+        volumes:
+        - name: data
+          emptyDir: {}

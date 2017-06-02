@@ -1,0 +1,36 @@
+document: modularity-testing
+version: 1
+name: httpd
+modulemd-url: https://src.fedoraproject.org/git/modules/httpd.git/plain/httpd.yaml
+service:
+    port: 8080
+packages:
+    rpms:
+        - httpd
+testdependecies:
+    rpms:
+        - curl
+module:
+    docker:
+        start: "docker run -it -p 8080:8080 -p 443:443"
+        source: https://github.com/container-images/httpd
+        container: httpd
+        labels:
+          summary: "Apache HTTP Server"
+          version: "0"
+          architecture: "x86_64"
+          com.redhat.component: "httpd"
+          usage: "docker run -p 80:80 -v <DIR>:/var/www/ f26/httpd"
+          description: "The Apache HTTP Server is a powerful, efficient, and extensible web server."
+          vendor: "Fedora Project"
+          org.fedoraproject.component: "httpd"
+          authoritative-source-url: "registry.fedoraproject.org"
+          io.k8s.description: "The Apache HTTP Server is a powerful, efficient, and extensible web server."
+          io.k8s.display-name: "httpd"
+          io.openshift.tags: "httpd"
+    rpm:
+        start: systemctl start httpd
+        stop: systemctl stop httpd
+        status: systemctl status httpd
+        repos:
+            - http://mirror.vutbr.cz/fedora/releases/26/Everything/x86_64/os/

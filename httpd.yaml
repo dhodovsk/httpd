@@ -7,54 +7,91 @@ data:
         module: [ MIT ]
     dependencies:
         buildrequires:
-            #workaround before base-runtime is ready
             bootstrap: master
+            # base-runtime: f26
+            # perl: f26
+            # common-build-dependencies: f26
         requires:
-            base-runtime: master
+            bootstrap: master
+            # base-runtime: f26
     references:
         community: https://docs.pagure.org/modularity/
         documentation: https://github.com/container-images/httpd
         tracker: https://github.com/container-images/httpd
     profiles:
+        # split into multiple profiles
         default:
             rpms:
                 - httpd
+	minimal:
+            description: Minimal profile installing only the httpd package.
+            rpms:
+                - httpd
+        secured:
+            description: Apache HTTP Server profile with SSL/TLS cryptography support
+            rpms:
+                - httpd
+                - mod_ssl
+        full:
+            description: Install all packages
+            rpms:
+                - httpd
+                - httpd-tools
+                - mod_ldap
+                - mod_proxy_html
+                - mod_session
+                - mod_ssl
     api:
         rpms:
             - httpd
+            - httpd-tools
+            - mod_ldap
+            - mod_proxy_html
+            - mod_session
+            - mod_ssl
     components:
         rpms:
             httpd:
                 rationale: Provides API for this module.
-                ref: f25
-
+                ref: f26
+                buildorder: 0
+            nghttp2:
+                rationale: Runtime dependency.
+                ref: f26
+            mod_http2:
+                rationale: Runtime dependency.
+                ref: f26
             apr:
-                rationale: dependency
-                ref: f25
+                rationale: dependency of httpd
+                ref: f26
+                buildorder: 1
+            # unixODBC:
+            #     rationale: dependency of apr-util
+            #     ref: f26
+            #     buildorder: 1
+            # freetds:
+            #     rationale: dependency of apr-util  # requires docbook-style-dsssl
+            #     ref: f26
+            #     buildorder: 2
             apr-util:
-                rationale: dependency
-                ref: f25
-            generic-logos:
-                rationale: dependency
-                ref: f25
-            generic-release:
-                rationale: dependency
-                ref: f25
-            libmnl:
-                rationale: dependency
-                ref: f25
-            libnetfilter_conntrack:
-                rationale: dependency
-                ref: f25
-            libnfnetlink:
-                rationale: dependency
-                ref: f25
-            libxkbcommon:
-                rationale: dependency
-                ref: f25
+                rationale: dependency of httpd  # requires also mysql-devel and postgresql-devel
+                ref: f26
+                buildorder: 3
+            # libmnl:
+            #     rationale: dependency
+            #     ref: f26
+            # libnetfilter_conntrack:
+            #     rationale: dependency
+            #     ref: f26
+            # libnfnetlink:
+            #     rationale: dependency
+            #     ref: f26
+            # libxkbcommon:
+            #     rationale: dependency
+            #     ref: f26
             mailcap:
                 rationale: dependency
-                ref: f25
-            xkeyboard-config:
-                rationale: dependency
-                ref: f25
+                ref: f26
+            # xkeyboard-config:
+            #     rationale: dependency
+            #     ref: f26

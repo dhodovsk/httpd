@@ -1,16 +1,21 @@
-# httpd web server container
-An example **httpd container** is based on fedora 25.  This container is being developed - test it, play with it, but please **don't use it in production**.
+Httpd Docker image
+====================
 
-## Configuration
-This repository contains file **httpd.conf** in files directory where you can configure all settings for httpd running in container.
+This repository contains Dockerfile for Apache HTTP server 2.4 based on [baseruntime](""https://hub.docker.com/r/baseruntime/baseruntime/) for the Fedora 26 Boltron general usage.
+For more information about modules see official [Fedora Modularity documentation](docs.pagure.org/modularity/) and [httpd module](https://github.com/modularity-modules/httpd) repository.
 
-## Running in Docker
 
-### 1) Shell
+Description
+----------------------------------
+Apache HTTP Server 2.4 available as docker container, is a powerful, efficient, and extensible web server. Apache supports a variety of features, many implemented as compiled modules which extend the core functionality. These can range from server-side programming language support to authentication schemes. Virtual hosting allows one Apache installation to serve many different Web sites.
+
+Usage
+----------------------------------
+
 ```
-$ docker run -p 80:80 -v <DIR>:/var/www/ rpitonak/httpd
+$ docker run -p 8080:8080 -p 443:443 -v <DIR>:/var/www/ modularitycontainers/httpd
 ```
-This starts the container and forwards port 80 from container to port 80 on host.
+This starts the container and forwards port 8080 from container to port 8080 on host.
 Substitute <DIR> with **absolute** path to your web root. You may also need to change SELinux settings like following.
 
 ```
@@ -21,26 +26,18 @@ Note that this is only for **testing purpose**. You can find more information ab
 * [Practical SELinux and Containers](http://www.projectatomic.io/blog/2016/03/dwalsh_selinux_containers/)
 * [Using Volumes with Docker can Cause Problems with SELinux](http://www.projectatomic.io/blog/2015/06/using-volumes-with-docker-can-cause-problems-with-selinux/)
 
-### 2) Makefile
-```
-$ make
-```
-This will build container and tag it. You can change tag and port be editing following lines:
-```
-#docker tag name
-IMAGE_NAME = httpd
 
-PORT = 80
+Test
+--------------------------------------
+This repository also provides tests (based on [MTF](https://pagure.io/modularity-testing-framework/tree/master)) which checks basic functionality of the MariaDB image.
+
+Run the tests using Makefile :
+```
+$ make test
 ```
 
-If you specify `DIR_PATH` variable, executing make will also **run** the container.
-
-```
-#absolute path to your web root
-#DIR_PATH = /
-```
-
-## Running in OpenShift
+Running in Openshift
+--------------------------------------
 To run this container in OpenShift, you need to change the `RunAsUser` option in the `restricted` Security Context Constraint (SCC) from `MustRunAsRange` to `RunAsAny`. Do it by running:
 
 ```
@@ -58,7 +55,8 @@ $ oc login -u developer
 $ oc create -f openshift-template.yaml
 ```
 
-## Httpd container for development
+Httpd container for development
+--------------------------------------
 
 This container can be used also in interactive way what can be useful for development.
 

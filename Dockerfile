@@ -1,4 +1,5 @@
 FROM baseruntime/baseruntime:latest
+
 # Description
 # Volumes:
 # * /var/www - Web root directory
@@ -41,7 +42,7 @@ RUN sed -i 's|/jkaluza/|/ralph/|g' /etc/yum.repos.d/build.repo && \
     microdnf --nodocs --enablerepo httpd install httpd && \
     microdnf clean all
 
-# add configuration file for web server
+# add sed file for substitution of configuration file
 COPY files/httpdconf.sed /tmp/httpdconf.sed
 
 # add run script

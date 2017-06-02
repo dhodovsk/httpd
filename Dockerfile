@@ -1,4 +1,4 @@
-FROM fedora:25
+FROM registry.fedoraproject.org/fedora:26
 
 # Description
 # Volumes:
@@ -8,16 +8,33 @@ FROM fedora:25
 # * 443 - secure http protocol
 # * 8080 - alternate http protocol
 
+ENV HTTPD_VERSION=2.4.25 \
+    NAME=httpd \
+    VERSION=0 \
+    RELEASE=0.1 \
+    ARCH=x86_64
+
+LABEL summary="Apache HTTP Server" \
+      name="$FGC/$NAME" \
+      version="$VERSION" \
+      release="$RELEASE.$DISTTAG" \
+      architecture="$ARCH" \
+      com.redhat.component=$NAME \
+      usage="docker run -p 80:80 -v <DIR>:/var/www/ f26/httpd" \
+      description="The Apache HTTP Server is a powerful, efficient, and extensible web server." \
+      vendor="Fedora Project" \
+      org.fedoraproject.component="httpd" \
+      authoritative-source-url="registry.fedoraproject.org" \
+      io.k8s.description="The Apache HTTP Server is a powerful, efficient, and extensible web server." \
+      io.k8s.display-name="httpd" \
+      io.openshift.tags="httpd"
+
+COPY help.1 /
 #install httpd service without documentation and clean cache
 RUN  dnf install -y --setopt=tsflags=nodocs httpd && \
      dnf -y clean all
 
 MAINTAINER Rado Pitonak <rpitonak@redhat.com>
-
-LABEL summary = "Httpd is a secure, efficient and extensible web server that provides HTTP services.  " \
-      name = "httpd" \
-      version = "2.4" \
-      release = "0.1"
 
 # add configuration file for web server
 ADD files/httpd.conf /etc/httpd/conf/httpd.conf

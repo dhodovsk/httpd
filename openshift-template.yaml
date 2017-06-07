@@ -31,7 +31,7 @@ objects:
   metadata:
     name: httpd-container
   spec:
-    dockerImageRepository: rpitonak/httpd
+    dockerImageRepository: modularitycontainers/httpd
     tags:
     - name: latest
 - kind: Route

@@ -1,0 +1,83 @@
+.TH "httpd" "2" "" "Rado Pitonak \<rpitonak@redhat.com\>" "DATE 07.06.2017"  ""
+
+.SH Name
+.PP
+httpd \- web server container based on baseruntime, using httpd module
+
+.SH Description
+.PP
+Apache HTTP Server 2.4 available as docker container, is a powerful, efficient, and extensible web server. Apache supports a variety of features, many implemented as compiled modules which extend the core functionality. These can range from server\-side programming language support to authentication schemes. Virtual hosting allows one Apache installation to serve many different Web sites.
+
+.SH Usage
+.PP
+.RS
+
+.nf
+$ docker run \-p 8080:8080 \-p 443:443 \-v <DIR>:/var/www/ modularitycontainers/httpd
+
+.fi
+.RE
+
+.PP
+This starts the container and forwards port 8080 from container to port 8080 on host.
+Substitute <DIR> with \fBabsolute\fP path to your web root. You may also need to change SELinux settings like following.
+
+.PP
+.RS
+
+.nf
+chcon \-Rt svirt\_sandbox\_file\_t <DIR>
+
+.fi
+.RE
+
+.SH Volumes
+.PP
+Website root directory.
+
+.PP
+.RS
+
+.nf
+/var/www/
+
+.fi
+.RE
+
+.PP
+Configuration directory.
+
+.PP
+.RS
+
+.nf
+/etc/httpd/conf/
+
+.fi
+.RE
+
+.SH Examples
+.PP
+Mount custom configuration inside the container
+
+.PP
+.RS
+
+.nf
+$ docker run \-p 8080:8080 \-v <CONF\_DIR>:/etc/httpd/conf \-v <DIR>:/var/www/ modularitycontainers/httpd
+
+.fi
+.RE
+
+.SH Security Implications
+.PP
+.RS
+
+.nf
+\-p 8080:8080
+
+.fi
+.RE
+
+.PP
+Opens  container  port  8080  and  maps it to the same port on the Host.

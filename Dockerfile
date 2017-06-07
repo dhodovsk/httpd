@@ -1,8 +1,9 @@
-FROM registry.fedoraproject.org/fedora:26
+FROM baseruntime/baseruntime:latest
 
 # Description
 # Volumes:
 # * /var/www - Web root directory
+# * /etc/httpd/conf/ - Configuration files directory
 # Exposed ports:
 # * 80 - standard protocol for http
 # * 443 - secure http protocol
@@ -11,8 +12,10 @@ FROM registry.fedoraproject.org/fedora:26
 ENV HTTPD_VERSION=2.4.25 \
     NAME=httpd \
     VERSION=0 \
-    RELEASE=0.1 \
+    RELEASE=1 \
     ARCH=x86_64
+
+LABEL MAINTAINER Rado Pitonak <rpitonak@redhat.com>
 
 LABEL summary="Apache HTTP Server" \
       name="$FGC/$NAME" \
@@ -29,26 +32,35 @@ LABEL summary="Apache HTTP Server" \
       io.k8s.display-name="httpd" \
       io.openshift.tags="httpd"
 
-COPY help.1 /
+COPY root/help.1 /help.1
+
 #install httpd service without documentation and clean cache
-RUN  dnf install -y --setopt=tsflags=nodocs httpd && \
-     dnf -y clean all
+#TODO remove hack with sed
+RUN microdnf --nodocs install httpd && \
+    microdnf clean all
 
-MAINTAINER Rado Pitonak <rpitonak@redhat.com>
-
-# add configuration file for web server
-ADD files/httpd.conf /etc/httpd/conf/httpd.conf
+# add sed file for substitution of configuration file
+COPY files/httpdconf.sed /tmp/httpdconf.sed
 
 # add run script
-ADD files/run-script.sh /run-script.sh
+ADD files/run-httpd /usr/bin/run-httpd
 
-# make run script executable
-RUN chmod +x run-script.sh
+RUN chmod -R a+rwx /etc/httpd && \
+    sed -i -f /tmp/httpdconf.sed /etc/httpd/conf/httpd.conf && \
+    useradd -r -g 0 -d ${HOME} -s /sbin/nologin \
+    -c "Default Application User" default && \
+    chmod -R a+rwx /var/www/ && \
+    chmod -R a+rwx /usr/bin/run-httpd && \
+    chmod -R a+rwx /run/httpd
+
 
 # VOLUME instruction creates unnamed volume and mounts it to the provided path,
 # you can override this behavior by mounting
 # a selected host directory into container: "-v <host_directory>:<container_directory>"
 VOLUME /var/www/
+VOLUME /etc/httpd/conf/
+
+USER 1001
 
 # EXPOSE instruction exposes port from container to host.
 # Specify it during `docker run` as parameter: "-p <host_port>:<container_port>"
@@ -57,4 +69,4 @@ EXPOSE 443
 EXPOSE 8080
 
 # Command which will start httpd service during command `docker run`
-CMD /bin/sh /run-script.sh
+CMD /usr/bin/run-httpd

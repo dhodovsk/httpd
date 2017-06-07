@@ -1,19 +1,17 @@
-.PHONY: build run defult
-
-#absolute path to your web root
-#DIR_PATH = /
-
-#docker tag name
 IMAGE_NAME = httpd
 
-PORT = 80
+MODULEMDURL=file://httpd.yaml
 
-defult: run
+default: run
 
 build:
 	docker build --tag=$(IMAGE_NAME) .
 
 run: build
-ifdef DIR_PATH
-		docker run -p $(PORT) -v $(DIR_PATH):/var/www/ $(IMAGE_NAME)
-endif
+	docker run -it -p 8080:8080 -p 443:443 $(IMAGE_NAME)
+
+debug: build
+	docker run -it -p 8080:8080 -p 443:443 $(IMAGE_NAME) bash
+
+test: build
+	cd tests; MODULE=docker MODULEMD=$(MODULEMDURL) URL="docker=$(IMAGE_NAME)" make all

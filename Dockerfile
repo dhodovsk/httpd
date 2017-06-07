@@ -32,14 +32,11 @@ LABEL summary="Apache HTTP Server" \
       io.k8s.display-name="httpd" \
       io.openshift.tags="httpd"
 
-COPY README.md /
-
-COPY repos/* /etc/yum.repos.d/
+COPY root/help.1 /help.1
 
 #install httpd service without documentation and clean cache
 #TODO remove hack with sed
-RUN sed -i 's|/jkaluza/|/ralph/|g' /etc/yum.repos.d/build.repo && \
-    microdnf --nodocs --enablerepo httpd install httpd && \
+RUN microdnf --nodocs install httpd && \
     microdnf clean all
 
 # add sed file for substitution of configuration file

@@ -1,4 +1,4 @@
-FROM baseruntime/baseruntime:latest
+FROM modularitycontainers/boltron-preview:latest
 
 # Description
 # Volumes:
@@ -35,9 +35,8 @@ LABEL summary="Apache HTTP Server" \
 COPY root/help.1 /help.1
 
 #install httpd service without documentation and clean cache
-#TODO remove hack with sed
-RUN microdnf --nodocs install httpd && \
-    microdnf clean all
+RUN dnf -y --nodocs install httpd && \
+    dnf clean all
 
 # add sed file for substitution of configuration file
 COPY files/httpdconf.sed /tmp/httpdconf.sed
